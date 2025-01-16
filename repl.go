@@ -25,6 +25,8 @@ type config struct {
 
 func startRepl(cfg *config) {
 	reader := bufio.NewScanner(os.Stdin)
+	commands := getCommands()
+
 	for {
 		fmt.Print("POKEDEX > ")
 		reader.Scan()
@@ -40,13 +42,12 @@ func startRepl(cfg *config) {
 			args = words[1:]
 		}
 
-		command, exists := getCommands()[commandName]
+		command, exists := commands[commandName]
 		if exists {
 			if err := command.callback(cfg, args...); err != nil {
 				log.Fatal(err)
 				continue
 			}
-			command.callback(cfg)
 		} else {
 			fmt.Println("Unknown command")
 			continue
